@@ -1,39 +1,27 @@
+// models/TrainingModule.ts
 import mongoose, { Document, Schema } from "mongoose";
-
-export interface IAssessment {
-  question: string;
-  options?: string[];
-  correctAnswer?: string;
-  type: "mcq" | "input";
-}
+import { Counter } from "./Counter"; // import the counter model
 
 export interface ITrainingModule extends Document {
   trainingName: string;
-  trainingId: string;
+  trainingId: number; // use number, not string
   videos: string[];
-  assessments: IAssessment[];
+  assessmentTemplateIds: mongoose.Types.ObjectId[];
   category: string;
   completionDate: Date;
   createdBy: mongoose.Types.ObjectId;
   departments: string[];
   designations: string[];
-  template: any[]; // Flexible template structure
+  template: any[];
   notified: boolean;
   createdAt: Date;
 }
 
-const assessmentSchema = new Schema<IAssessment>({
-  question: String,
-  options: [String],
-  correctAnswer: String,
-  type: { type: String, enum: ["mcq", "input"], default: "mcq" },
-});
-
 const trainingModuleSchema = new Schema<ITrainingModule>({
-  trainingName: { type: String, required: true },
-  trainingId: { type: String, required: true, unique: true },
+  trainingName: { type: String, required: true, unique: true },
+  trainingId: { type: Number, unique: true }, // auto-generated
   videos: [String],
-  assessments: [assessmentSchema],
+  assessmentTemplateIds: [{ type: Schema.Types.ObjectId, ref: "Assessment" }],
   category: String,
   completionDate: Date,
   createdBy: { type: Schema.Types.ObjectId, ref: "User" },
@@ -42,6 +30,19 @@ const trainingModuleSchema = new Schema<ITrainingModule>({
   template: [Schema.Types.Mixed],
   notified: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
+});
+
+// Pre-save hook to auto-increment trainingId
+trainingModuleSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    const counter = await Counter.findOneAndUpdate(
+      { name: "trainingId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    this.trainingId = counter.value;
+  }
+  next();
 });
 
 export const TrainingModule = mongoose.model<ITrainingModule>(

@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import jwt from "jsonwebtoken";
-import { UserModel } from "./../models/user.model";
+import { User } from "../models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret_key";
 
@@ -10,10 +10,10 @@ export const verifyJWT = async (req: FastifyRequest, reply: FastifyReply) => {
     if (!authHeader) throw new Error("No token provided");
 
     const token = authHeader.replace("Bearer ", "");
-    const payload = jwt.verify(token, JWT_SECRET) as { email: string };
+    const payload = jwt.verify(token, JWT_SECRET) as { empId: string };
 
     // fetch user to compare stored token
-    const user = await UserModel.findOne({ email: payload.email });
+    const user = await User.findOne({ empId: payload.empId });
     if (!user || user.jwtoken !== token) {
       throw new Error("Token is expired or revoked");
     }
