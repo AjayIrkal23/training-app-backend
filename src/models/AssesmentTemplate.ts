@@ -30,7 +30,7 @@ const assessmentQuestionSchema = new Schema<IAssessmentQuestion>(
 );
 
 const assessmentTemplateSchema = new Schema<IAssessmentTemplate>({
-  templateId: { type: Number, unique: true }, // Add templateId
+  templateId: { type: Schema.Types.Mixed, unique: true }, // Add templateId
   name: { type: String, required: true, unique: true },
   department: { type: String, required: true },
   questions: [assessmentQuestionSchema],

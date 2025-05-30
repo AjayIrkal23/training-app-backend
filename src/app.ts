@@ -13,6 +13,7 @@ import staticFiles from "./plugins/static";
 import compress from "./plugins/compress";
 import sensible from "./plugins/sensible";
 import arena from "./dashboard/arena";
+import "./workers/assignTrainingWorker";
 
 // 🧩 Route Imports
 import { userRoutes } from "./routes/user.routes";
@@ -25,6 +26,8 @@ import { TrainingModule } from "./models/TrainingModule";
 import { AssessmentTemplate } from "./models/AssesmentTemplate";
 import { AssessmentAnswer } from "./models/AssessmentAnswer";
 import { User } from "./models/User";
+import { scheduleTrainingJob } from "./schedulers/scheduleAssignTraining";
+import { assignTrainingsToUsers } from "./jobs/scheduleAssignTraining";
 
 // 🚀 App Factory
 export const buildApp = () =>
@@ -82,4 +85,9 @@ export const registerAppPlugins = async (app: ReturnType<typeof buildApp>) => {
 
   // 🕒 Schedule periodic index sync
   startIndexSyncScheduler();
+
+  // Redis
+  await scheduleTrainingJob();
+
+  await assignTrainingsToUsers();
 };

@@ -6,10 +6,9 @@ export interface ITrainingModule extends Document {
   trainingName: string;
   trainingId: number; // use number, not string
   videos: string[];
-  assessmentTemplateIds: mongoose.Types.ObjectId[];
+  assessmentTemplateIds: Schema.Types.Mixed[];
   category: string;
   completionDate: Date;
-  createdBy: mongoose.Types.ObjectId;
   departments: string[];
   designations: string[];
   template: any[];
@@ -21,10 +20,9 @@ const trainingModuleSchema = new Schema<ITrainingModule>({
   trainingName: { type: String, required: true, unique: true },
   trainingId: { type: Number, unique: true }, // auto-generated
   videos: [String],
-  assessmentTemplateIds: [{ type: Schema.Types.ObjectId, ref: "Assessment" }],
+  assessmentTemplateIds: [{ type: Schema.Types.Mixed }],
   category: String,
   completionDate: Date,
-  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   departments: [String],
   designations: [String],
   template: [Schema.Types.Mixed],

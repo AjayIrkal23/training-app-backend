@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { TrainingModule } from "../models/TrainingModule";
+import { assignTrainingsToUsers } from "./../jobs/scheduleAssignTraining";
 
 // Create a new training
 export const createTraining = async (
@@ -9,6 +10,7 @@ export const createTraining = async (
   try {
     const training = new TrainingModule(req.body);
     await training.save();
+    await assignTrainingsToUsers();
     return reply.code(201).send(training);
   } catch (error) {
     return reply
@@ -27,6 +29,7 @@ export const getAllTrainings = async (
     return reply.send(trainings);
   } catch (error) {
     return reply
+
       .code(500)
       .send({ message: "Failed to fetch trainings", error });
   }
@@ -68,6 +71,8 @@ export const updateTraining = async (
     if (!updated) {
       return reply.code(404).send({ message: "Training not found" });
     }
+
+    await assignTrainingsToUsers();
 
     return reply.send(updated);
   } catch (error) {

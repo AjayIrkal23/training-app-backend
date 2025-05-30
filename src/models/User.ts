@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret_key";
 const JWT_EXPIRES_IN = "7d"; // adjust as needed
 
 export interface IAssignedTraining {
-  trainingId: mongoose.Types.ObjectId;
+  trainingId: any;
   status: "assigned" | "in-progress" | "completed" | "delayed";
   score: number;
   completedOn?: Date;
@@ -32,7 +32,7 @@ export interface IUser extends Document {
 
 const assignedTrainingSchema = new Schema<IAssignedTraining>({
   trainingId: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.Mixed,
     ref: "TrainingModule",
     required: true,
   },

@@ -8,7 +8,8 @@ export const createUser = async (
   reply: FastifyReply
 ) => {
   try {
-    const newUser = new User(request.body);
+    let newUser = new User(request.body);
+    newUser.active = false;
     const savedUser = await newUser.save();
     return reply.code(201).send(savedUser);
   } catch (error) {
@@ -29,6 +30,12 @@ export const loginUser = async (
 
     if (!user || !(await user.comparePassword(password))) {
       return reply.code(401).send({ message: "Invalid credentials" });
+    }
+
+    if (!user.active) {
+      return reply
+        .code(401)
+        .send({ message: "Account Inactive Please Contact Admin" });
     }
 
     const token = user.generateJWT();

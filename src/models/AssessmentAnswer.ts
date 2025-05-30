@@ -3,11 +3,12 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IUserAnswer {
   question: string;
   answer: any;
+  correctAnswer: any;
 }
 
 export interface IAssessmentAnswer extends Document {
-  userId: mongoose.Types.ObjectId;
-  trainingId: mongoose.Types.ObjectId;
+  empId: any;
+  trainingId: any;
   answers: IUserAnswer[];
   score: number;
   status: "pass" | "fail";
@@ -15,19 +16,16 @@ export interface IAssessmentAnswer extends Document {
 }
 
 const userAnswerSchema = new Schema<IUserAnswer>({
-  question: String,
-  answer: Schema.Types.Mixed,
+  question: { type: String, required: true },
+  answer: { type: Schema.Types.Mixed, required: true },
+  correctAnswer: { type: Schema.Types.Mixed, required: true },
 });
 
 const assessmentAnswerSchema = new Schema<IAssessmentAnswer>({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  trainingId: {
-    type: Schema.Types.ObjectId,
-    ref: "TrainingModule",
-    required: true,
-  },
+  empId: { type: Schema.Types.Mixed, required: true },
+  trainingId: { type: Schema.Types.Mixed, required: true },
   answers: [userAnswerSchema],
-  score: Number,
+  score: { type: Number, required: true },
   status: { type: String, enum: ["pass", "fail"], default: "fail" },
   submittedAt: { type: Date, default: Date.now },
 });
