@@ -30,8 +30,9 @@ import { scheduleTrainingJob } from "./schedulers/scheduleAssignTraining";
 import { assignTrainingsToUsers } from "./jobs/scheduleAssignTraining";
 
 // 🚀 App Factory
-export const buildApp = () =>
+export const buildApp = (opts = {}) =>
   Fastify({
+    ...opts,
     logger: {
       transport: {
         target: "pino-pretty",
