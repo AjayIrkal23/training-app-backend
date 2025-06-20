@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret_key";
-const JWT_EXPIRES_IN = "7d"; // adjust as needed
 
 export interface IAssignedTraining {
   trainingId: any;
@@ -92,7 +91,7 @@ userSchema.methods.generateJWT = function (): string {
     email: this.emailId,
     empId: this.empId,
   };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  const token = jwt.sign(payload, JWT_SECRET);
   this.jwtoken = token;
   return token;
 };

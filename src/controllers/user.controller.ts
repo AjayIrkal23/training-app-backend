@@ -86,6 +86,7 @@ export const getAllUsers = async (
 ) => {
   try {
     const users = await User.find().select("-password -jwtoken"); // 👈 Exclude fields
+
     return reply.send(users);
   } catch (error) {
     return reply
