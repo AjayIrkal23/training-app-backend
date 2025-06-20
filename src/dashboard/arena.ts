@@ -2,7 +2,7 @@ import fp from "fastify-plugin";
 import { createBullBoard } from "@bull-board/api";
 import { FastifyAdapter } from "@bull-board/fastify";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
-import { assignTrainingQueue } from "queues/assignTrainingQueue";
+import { assignTrainingQueue } from "../queues/assignTrainingQueue";
 
 export default fp(async (fastify) => {
   const serverAdapter = new FastifyAdapter();
